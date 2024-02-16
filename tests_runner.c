@@ -6,7 +6,7 @@
 /*   By: zanikin <zanikin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 15:53:00 by zanikin           #+#    #+#             */
-/*   Updated: 2024/02/16 15:19:56 by zanikin          ###   ########.fr       */
+/*   Updated: 2024/02/16 16:27:38 by zanikin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,13 @@ static int	i_sign_precision_test(int (*print_func)(const char *, ...), int outpu
 static int	i_sign_width_plus_precision_test(int (*print_func)(const char *, ...), int output, char *out_buff);
 static int	i_space_width_precision_test(int (*print_func)(const char *, ...), int output, char *out_buff);
 static int	i_zero_space_left_width_precision_test(int (*print_func)(const char *, ...), int output, char *out_buff);
+static int	i_mix_test(int (*print_func)(const char *, ...), int output, char *out_buff);
 
 // d tests
 
 static int	d_test(int (*print_func)(const char *, ...), int, char *);
 static int	d_0_width_neg_test(int (*print_func)(const char *, ...), int output, char *out_buff);
+static int	d_mix_test(int (*print_func)(const char *, ...), int output, char *out_buff);
 
 // u tests
 
@@ -155,11 +157,13 @@ int	main()
 		&i_sign_width_plus_precision_test,
 		&i_space_width_precision_test,
 		&i_zero_space_left_width_precision_test,
+		&i_mix_test,
 
 		// d tests
 
 		&d_test,
 		&d_0_width_neg_test,
+		&d_mix_test,
 
 		// u tests
 
@@ -498,6 +502,14 @@ static int	i_zero_space_left_width_precision_test(int (*print_func)(const char *
 	return print_func(format, 461);
 }
 
+static int	i_mix_test(int (*print_func)(const char *, ...), int output, char *out_buff)
+{
+	const char	*format = "cspdiuii%0+04.12iispdiuxX|di% +00.000i|% +i|%- #+1.5i|534% #1.5i5345|53%+010.8";
+	if (output)
+		message_test(out_buff, "i mix", format);
+	return print_func(format, INT_MIN, 0, 1, 15, -1, -23);
+}
+
 // d tests
 
 static int	d_test(int (*print_func)(const char *, ...), int output, char *out_buff)
@@ -518,6 +530,14 @@ static int	d_0_width_neg_test(int (*print_func)(const char *, ...), int output, 
 	return print_func(format, i);
 }
 
+static int	d_mix_test(int (*print_func)(const char *, ...), int output, char *out_buff)
+{
+	const char	*format = "cspdiuxX%0+04.12dcspdiuxX|di% +00.000d|% +d|%- #+1.5d|534% #1.5d5345|53%+010.8d";
+	if (output)
+		message_test(out_buff, "d mix", format);
+	return print_func(format, INT_MIN, 0, 1, 15, -1, -23);
+}
+
 // u tests
 
 static int	u_test(int (*print_func)(const char *, ...), int output, char *out_buff)
@@ -530,6 +550,15 @@ static int	u_test(int (*print_func)(const char *, ...), int output, char *out_bu
 }
 
 static int	u_plus_test(int (*print_func)(const char *, ...), int output, char *out_buff)
+{
+	const char	*format = "cspdiuxX%+ucspdiuxX";
+	int			i = -1;
+	if (output)
+		message_test(out_buff, "u", format);
+	return print_func(format, i);
+}
+
+static int	u_mix_test(int (*print_func)(const char *, ...), int output, char *out_buff)
 {
 	const char	*format = "cspdiuxX%+ucspdiuxX";
 	int			i = -1;
